@@ -1,0 +1,28 @@
+body {
+  font-family: sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+textarea {
+  width: 100%;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.controls,
+.editor,
+.stdin,
+.output {
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
