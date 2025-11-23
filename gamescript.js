@@ -13,7 +13,7 @@ let currentProblem = null;  // Holds the currently loaded problem
 // Run JS ONLY after the HTML document is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
 
-   const username = sessionStorage.getItem("cp_username");
+  const username = sessionStorage.getItem("cp_username");
   if (username) {
     document.getElementById("player-name").textContent = username;
   }
@@ -30,19 +30,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  
-
   // Grab references to HTML elements by ID
-  const loadBtn = document.getElementById("load-problem");                   // "Load Problem" button
-  const titleEl = document.getElementById("problem-title");                  // <h3> where the title goes
-  const diffEl = document.getElementById("problem-difficulty");              // <p> where difficulty is shown
-  const descEl = document.getElementById("problem-description");   
+  const titleEl = document.getElementById("problem-title");                   // <h3> where the title goes
+  const diffEl = document.getElementById("problem-difficulty");               // <p> where difficulty is shown
+  const descEl = document.getElementById("problem-description");
   const showSolutionButton = document.getElementById("show-solution");
-  const solutionTitleEl = document.getElementById("solution-title");          // <div> holding full problem text
-  const solutionDescEl = document.getElementById("solution-description");           // <div> holding the solution (if needed)
-  const customInput = document.getElementById("custom-input");   // stdin input box
+  const solutionTitleEl = document.getElementById("solution-title");         // <div> holding full problem text
+  const solutionDescEl = document.getElementById("solution-description");    // <div> holding the solution (if needed)
+  const customInput = document.getElementById("custom-input");                // stdin input box
 
-  
   // 🔹 Simple deterministic hash: same string → same number
   function hashToIndex(str, mod) {
     let h = 0;
@@ -53,31 +49,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ============================================================
-  //  When the user clicks the "Load Problem" button:
+  //  Load a problem:
   //    1. Read selected difficulty
-  //    2. Pick a random problem from that difficulty
-  //    3. Display the problem information on the page
+  //    2. Pick a (deterministic) problem
+  //    3. Display it
   // ============================================================
-  loadBtn.addEventListener("click", () => {
-
-    // Get selected diff: "easy", "medium", or "hard"
+  function loadProblem() {
     const diff = sessionStorage.getItem("cp_difficulty") || "easy";
-
 
     // Grab the array of problems for that difficulty
     const list = problems[diff];
 
-    // If the difficulty has no problems or wasn't loaded correctly
+    // If the difficulty has no problems or wasn’t loaded correctly
     if (!list || list.length === 0) {
-      titleEl.textContent = "No problems available.";  // Show an error message
-      diffEl.textContent = "";                         // Clear difficulty
-      descEl.textContent = "";   
+      titleEl.textContent = "No problems available.";
+      diffEl.textContent = "";
+      descEl.textContent = "";
       solutionTitleEl.textContent = "";
-      solutionDescEl.textContent = "";                     // Clear description
-      return;                                          // Stop execution
+      solutionDescEl.textContent = "";
+      return;
     }
-
-  
 
     // 🔹 If we have a roomId, use it to pick SAME index for both players
     let idx;
@@ -90,21 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Get the selected problem object
     const problem = list[idx];
-    currentProblem = problem;  // Store it globally (if needed later)
-
+    currentProblem = problem;
 
     // ===============================================
     // Update the DOM with the problem’s information
     // ===============================================
-
-    // Set the problem title (e.g., "Sum of Two Numbers")
     titleEl.textContent = problem.title;
-
-    // Set the difficulty text ("Easy", "Medium", "Hard")
     diffEl.textContent = problem.difficulty;
-
-    // Build a formatted description block.
-    // Using \n for newlines since textContent preserves them.
     descEl.textContent =
       problem.description +
       "\n\nInput:\n" + problem.input +
@@ -112,15 +95,20 @@ document.addEventListener("DOMContentLoaded", () => {
       "\n\nSample Input:\n" + problem.sampleInput +
       "\n\nSample Output:\n" + problem.sampleOutput;
 
-    //clear old solutions
+    // Clear old solution
     solutionTitleEl.textContent = "";
-    solutionDescEl.textContent = "";   
+    solutionDescEl.textContent = "";
 
-     if (customInput) {
-    customInput.value = problem.sampleInput || "";
-      }
-  });
-  //show solution when button clicked
+    if (customInput) {
+      customInput.value = problem.sampleInput || "";
+    }
+  }
+
+
+  // 🔥 Automatically load a problem as soon as the page is ready
+  loadProblem();
+
+  // show solution when button clicked
   showSolutionButton.addEventListener("click", () => {
     if (!currentProblem) {
       alert("No problem loaded. Please load a problem first.");

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Join Game</title>
@@ -32,26 +33,29 @@
       border: 1px solid #334155;
       border-radius: 8px;
       font-size: 16px;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
 
     #username:focus {
       outline: 2px solid #3b82f6;
     }
+
+    #home-card h2 {
+      margin-top: 4px;
+      margin-bottom: 25px;
+    }
   </style>
 </head>
+
 <body>
 
   <div id="home-wrapper">
     <div id="home-card">
+      <img src="ink.png" alt="LeetBattles Logo" style="width: 180px; margin-bottom: 5px;" />
+
       <h2>Enter Username</h2>
 
-      <input 
-        id="username" 
-        type="text" 
-        placeholder="Your username"
-        autocomplete="off"
-      />
+      <input id="username" type="text" placeholder="Your username" autocomplete="off" />
 
       <button id="join-btn">Join Game</button>
     </div>
@@ -83,4 +87,5 @@
   </script>
 
 </body>
+
 </html>
