@@ -295,6 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const wrongInsult = wrong_insults[Math.floor(Math.random() * wrong_insults.length)];
             // WRONG ANSWER ROAST (Disappointed Voice)
             playRoast(wrongInsult, "933563129e564b19a115bedd57b7406a");
+
           }
         } else {
           checkResultBox.textContent =
