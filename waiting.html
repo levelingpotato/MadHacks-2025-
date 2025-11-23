@@ -105,7 +105,7 @@
       }
 
       statusEl.textContent = "Connecting...";
-      ws = new WebSocket("ws://localhost:4000");
+      ws = new WebSocket("ws://10.141.254.52:4000");
 
       ws.addEventListener("open", () => {
         statusEl.textContent = "Connected. You can now join the queue.";
