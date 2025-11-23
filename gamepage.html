@@ -91,7 +91,18 @@ public class Main {
       </div>
     </section>
   </div>
-
+  
+  <!-- Result overlay (hidden by default) -->
+  <div id="game-overlay" class="game-overlay" role="status" aria-live="assertive" aria-hidden="true">
+    <div class="game-overlay__card">
+      <div id="game-overlay-icon" class="game-overlay__icon"></div>
+      <h2 id="game-overlay-title" class="game-overlay__title"></h2>
+      <p id="game-overlay-sub" class="game-overlay__sub"></p>
+      <div class="game-overlay__actions">
+        <button id="game-overlay-dismiss">Close</button>
+      </div>
+    </div>
+  </div>
   <!-- Scripts (order matters) -->
   <script src="problems.js"></script>
   <script src="gamescript.js"></script>

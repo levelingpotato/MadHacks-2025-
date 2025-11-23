@@ -286,9 +286,16 @@ document.addEventListener("DOMContentLoaded", () => {
               expectedOut +
               "\n\nGot:\n" +
               actualOut;
-
+            const wrong_insults = [
+              "Wrong answer, you gotta lock in",
+              "Nope, thats wrong",
+              "Wrong wrong wrong",
+              "That is definitely incorrect"
+            ]
+            const wrongInsult = wrong_insults[Math.floor(Math.random() * wrong_insults.length)];
             // WRONG ANSWER ROAST (Disappointed Voice)
-            playRoast("Wrong answer. Lock in bro!", "933563129e564b19a115bedd57b7406a");
+            playRoast(wrongInsult, "933563129e564b19a115bedd57b7406a");
+
           }
         } else {
           checkResultBox.textContent =
