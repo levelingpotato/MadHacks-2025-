@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Join Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Quick styling to center card */
+    #home-wrapper {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    #home-card {
+      background-color: #020617;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      width: 350px;
+      text-align: center;
+    }
+
+    #username {
+      width: 100%;
+      padding: 10px;
+      background-color: #0f172a;
+      color: #e5e7eb;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    #username:focus {
+      outline: 2px solid #3b82f6;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="home-wrapper">
+    <div id="home-card">
+      <h2>Enter Username</h2>
+
+      <input 
+        id="username" 
+        type="text" 
+        placeholder="Your username"
+        autocomplete="off"
+      />
+
+      <button id="join-btn">Join Game</button>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById("username");
+    const joinBtn = document.getElementById("join-btn");
+
+    joinBtn.addEventListener("click", () => {
+      const name = input.value.trim();
+
+      if (!name) {
+        alert("Please enter a username.");
+        return;
+      }
+
+      // Save username globally (persistent)
+      sessionStorage.setItem("cp_username", name);
+
+      // Go to your main page
+      window.location.href = "waiting.html";
+    });
+
+    // Enter key triggers join
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") joinBtn.click();
+    });
+  </script>
+
+</body>
+</html>
