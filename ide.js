@@ -53,11 +53,92 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("💬 WS message from server:", msg);
 
         // Server tells us the game result
-        if (msg.type === "gameResult" && gameStateBox) {
+        if (msg.type === "gameResult") {
+          // Prefer the overlay if present
+          const overlay = document.getElementById("game-overlay");
+          const titleEl = document.getElementById("game-overlay-title");
+          const subEl = document.getElementById("game-overlay-sub");
+          const iconEl = document.getElementById("game-overlay-icon");
+
+          // Clear the small game state box (we'll use overlay)
+          if (gameStateBox) gameStateBox.textContent = "";
+
+          function hideOverlay() {
+            if (!overlay) return;
+            overlay.setAttribute("aria-hidden", "true");
+            overlay.classList.remove("game-overlay--win", "game-overlay--lose");
+          }
+
+          function showOverlay({ result, winner }) {
+            if (!overlay || !titleEl || !subEl || !iconEl) {
+              // fallback to old text display
+              if (gameStateBox) {
+                if (result === "won") gameStateBox.textContent = "🎉 You won!";
+                else gameStateBox.textContent = `😢 You lost. Winner: ${winner}`;
+              }
+              return;
+            }
+
+            const youWon = result === "won";
+            overlay.classList.remove("game-overlay--win", "game-overlay--lose");
+            overlay.classList.add(youWon ? "game-overlay--win" : "game-overlay--lose");
+
+            titleEl.textContent = youWon ? "You Won!" : "You Lost";
+            subEl.textContent = youWon
+              ? `Great job — you were first to solve the problem!`
+              : `Winner: ${winner}. Better luck next time.`;
+
+            overlay.setAttribute("aria-hidden", "false");
+
+            // Short audible cue (Web Audio) — simple beep
+            try {
+              const AudioCtx = window.AudioContext || window.webkitAudioContext;
+              const actx = new AudioCtx();
+              const o = actx.createOscillator();
+              const g = actx.createGain();
+              o.type = youWon ? "sine" : "triangle";
+              o.frequency.setValueAtTime(youWon ? 880 : 240, actx.currentTime);
+              g.gain.setValueAtTime(0.0001, actx.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.15, actx.currentTime + 0.01);
+              o.connect(g);
+              g.connect(actx.destination);
+              o.start();
+              g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + 0.4);
+              o.stop(actx.currentTime + 0.45);
+              // close context after sound finishes
+              setTimeout(() => {
+                try { actx.close(); } catch (e) {}
+              }, 600);
+            } catch (e) {
+              // ignore audio errors
+            }
+
+            // Vibrate pattern if available (mobile)
+            try {
+              if (navigator.vibrate) {
+                navigator.vibrate(youWon ? [200, 80, 200] : [300, 100, 100]);
+              }
+            } catch (e) {}
+
+            // Allow dismiss by clicking the overlay or the button
+            overlay.addEventListener(
+              "click",
+              (ev) => {
+                // only dismiss when clicked outside the card or on dismiss button
+                const dismissBtn = document.getElementById("game-overlay-dismiss");
+                if (ev.target === overlay || ev.target === dismissBtn) {
+                  hideOverlay();
+                }
+              },
+              { once: true }
+            );
+          }
+
+          // Use the overlay to present the result prominently
           if (msg.result === "won") {
-            gameStateBox.textContent = "🎉 You won!";
+            showOverlay({ result: "won", winner: msg.winner });
           } else if (msg.result === "lost") {
-            gameStateBox.textContent = `😢 You lost. Winner: ${msg.winner}`;
+            showOverlay({ result: "lost", winner: msg.winner });
           }
         }
       });
