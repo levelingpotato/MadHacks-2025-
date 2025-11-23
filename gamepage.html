@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="author" content="Jeremy, Shyam, Eric" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Practice v1</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Main Title --> 
+  <h1>Welcome <span id="player-name"></span></h1>
+
+  <p id="room-label" style="margin: 0 24px 8px; color: #9ca3af; font-size: 14px;"></p>
+
+  <!-- MAIN 2-COLUMN LAYOUT -->
+  <div id="main-layout">
+    <!-- LEFT: Problem panel -->
+    <section id="problem-selector">
+      <h2>Click for Problem</h2>
+              
+  
+      <button id="load-problem">Load Problem</button>
+
+      <div id="problem-display">
+        <!-- Problem statement will be displayed here -->
+        <h3 id="problem-title">No Problem Loaded Yet</h3>
+        <p id="problem-difficulty"></p>
+        <div id="problem-description"></div>
+      </div>
+
+      <!-- Solution under problem (like LeetCode's tabs/area) -->
+      <section id="solution">
+        <button id="show-solution" disabled>Show Solution</button>
+        <div id="solution-display">
+          <!-- Solution will be displayed here -->
+          <h3 id="solution-title"></h3>
+          <div id="solution-description"></div>
+        </div>
+      </section>
+    </section>
+
+    <!-- RIGHT: IDE panel -->
+    <section id="ide">
+      <h2>Code Editor</h2>
+
+      <label for="language">Language:</label>
+      <select id="language">
+        <option value="62">Java</option>
+        <option value="71">Python</option>
+        <option value="54">C++</option>
+      </select>
+
+      <div id="editor-container">
+        <textarea id="code-editor" spellcheck="false">
+//Write your code here...
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+        </textarea>
+      </div>
+
+      <label for="custom-input">Custom Input:</label>
+      <textarea
+        id="custom-input"
+        spellcheck="false"
+        placeholder="Enter custom input here..."
+        wrap="soft"
+      ></textarea>
+
+      <button id="run-code">Run Code</button>
+
+      <div id="output-display">
+        <h3>Output:</h3>
+        <pre id="output"></pre>
+
+        <h3>Status</h3>
+        <pre id="status"></pre>
+
+        <h3>Errors</h3>
+        <pre id="errors"></pre>
+
+        <h3>Result</h3>
+        <pre id="check-result"></pre>
+
+         <h3>Game State</h3>
+        <pre id="game-state"></pre>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts (order matters) -->
+  <script src="problems.js"></script>
+  <script src="gamescript.js"></script>
+  <script src="ide.js"></script>
+</body>
+</html>

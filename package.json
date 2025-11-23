@@ -1,0 +1,24 @@
+{
+  "name": "madhacks-2025-leetcode-war",
+  "version": "1.0.0",
+  "main": "gamescript.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levelingpotato/MadHacks-2025-LeetCode-War.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/levelingpotato/MadHacks-2025-LeetCode-War/issues"
+  },
+  "homepage": "https://github.com/levelingpotato/MadHacks-2025-LeetCode-War#readme",
+  "description": "",
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
+}

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Waiting Room</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Minimal centering for waiting page */
+    #waiting-wrapper {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    #waiting-card {
+      background-color: #020617;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid #1f2937;
+      width: 360px;
+      text-align: center;
+    }
+
+    #waiting-card h2 {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+
+    #username-wait {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #4b5563;
+      background-color: #0f172a;
+      color: #e5e7eb;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+
+    #username-wait:focus {
+      outline: 2px solid #3b82f6;
+    }
+
+    #status {
+      font-size: 13px;
+      color: #9ca3af;
+      min-height: 18px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="waiting-wrapper">
+    <div id="waiting-card">
+      <h2>Waiting Room</h2>
+
+      <input id="username-wait" type="text" placeholder="Enter username" autocomplete="off" />
+      <div style="margin-bottom: 12px;">
+        <label for="difficulty-select">Difficulty:</label>
+        <select id="difficulty-select">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+      <div id="status">Not connected yet.</div>
+
+      <button id="connect-btn">Connect</button>
+      <button id="join-queue-btn" disabled>Join Queue</button>
+    </div>
+  </div>
+
+  <script>
+    const usernameInput = document.getElementById("username-wait");
+    const statusEl = document.getElementById("status");
+    const connectBtn = document.getElementById("connect-btn");
+    const joinQueueBtn = document.getElementById("join-queue-btn");
+    const difficultySelect = document.getElementById("difficulty-select");
+
+    let ws = null;
+
+    // 🔹 Prefill username from homepage, if it exists
+    const savedName = sessionStorage.getItem("cp_username");
+    if (savedName) {
+      usernameInput.value = savedName;
+    }
+
+    const savedDiff = sessionStorage.getItem("cp_difficulty");
+    if (savedDiff) {
+      difficultySelect.value = savedDiff;
+    }
+
+
+
+
+    connectBtn.addEventListener("click", () => {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        statusEl.textContent = "Already connected.";
+        return;
+      }
+
+      statusEl.textContent = "Connecting...";
+      ws = new WebSocket("ws://10.141.254.52:4000");
+
+      ws.addEventListener("open", () => {
+        statusEl.textContent = "Connected. You can now join the queue.";
+        joinQueueBtn.disabled = false;
+      });
+
+      ws.addEventListener("close", () => {
+        statusEl.textContent = "Disconnected from server.";
+        joinQueueBtn.disabled = true;
+      });
+
+      ws.addEventListener("message", (event) => {
+        let msg;
+        try {
+          msg = JSON.parse(event.data);
+        } catch (e) {
+          console.error("Invalid message from server:", event.data);
+          return;
+        }
+
+        if (msg.type === "waiting") {
+          statusEl.textContent = "Waiting for an opponent...";
+        } else if (msg.type === "paired") {
+          const myName = usernameInput.value.trim();
+          const other =
+            msg.players.find((p) => p.username !== myName)?.username || "opponent";
+
+          statusEl.textContent = `Paired in room ${msg.roomId} with ${other}`;
+
+          // ⭐ NEW: Save room + players so gamepage.html can read it
+          sessionStorage.setItem(
+            "cp_room_info",
+            JSON.stringify({
+              roomId: msg.roomId,
+              players: msg.players,
+              me: myName,
+              opponent: other,
+            })
+          );
+
+          // ⭐ NEW: Jump into the main game page
+          window.location.href = "gamepage.html";
+        }
+      });
+    });
+
+    joinQueueBtn.addEventListener("click", () => {
+      const name = usernameInput.value.trim() || "Guest";
+      usernameInput.value = name;
+
+      // Save to localStorage if you want to reuse
+      sessionStorage.setItem("cp_username", name);
+
+      // 🔹 Save chosen difficulty for this tab
+      const diff = difficultySelect.value || "easy";
+      sessionStorage.setItem("cp_difficulty", diff);
+
+
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        statusEl.textContent = "Not connected to server.";
+        return;
+      }
+
+      statusEl.textContent = "Joining queue...";
+      ws.send(
+        JSON.stringify({
+          type: "joinQueue",
+          username: name,
+        })
+      );
+    });
+
+    // Allow pressing Enter to trigger Connect or Join
+    usernameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        if (!ws || ws.readyState !== WebSocket.OPEN) {
+          connectBtn.click();
+        } else {
+          joinQueueBtn.click();
+        }
+      }
+    });
+  </script>
+
+</body>
+
+</html>

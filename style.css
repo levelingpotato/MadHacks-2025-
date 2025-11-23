@@ -1,0 +1,269 @@
+/* ===========================
+   GLOBAL PAGE STYLE
+   =========================== */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0f172a;        /* dark navy-ish */
+  color: #e5e7eb;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* Top title bar like a simple navbar */
+h1 {
+  margin: 0;
+  padding: 16px 24px;
+  background-color: #020617;        /* darker bar */
+  border-bottom: 1px solid #1f2937;
+  font-size: 22px;
+}
+
+/* ===========================
+   2-COLUMN LAYOUT
+   =========================== */
+
+#main-layout {
+  display: flex;
+  height: calc(100vh - 64px);       /* full height minus title bar */
+  padding: 16px;
+  gap: 16px;
+}
+
+/* left = problem, right = IDE */
+#problem-selector,
+#ide {
+  background-color: #020617;
+  border-radius: 10px;
+  border: 1px solid #1f2937;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;                     /* prevents overflow */
+}
+
+/* Make IDE slightly wider like LeetCode */
+#problem-selector {
+  flex: 0.9;
+}
+
+#ide {
+  flex: 1.1;
+}
+
+/* Make contents scroll inside each panel if tall */
+#problem-selector,
+#ide {
+  overflow: hidden;
+}
+
+#problem-display,
+#solution-display,
+#editor-container,
+#output-display {
+  overflow-y: auto;
+}
+
+/* Headings inside panels */
+#problem-selector h2,
+#ide h2 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+/* ===========================
+   LABELS + DROPDOWNS
+   =========================== */
+
+label {
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+select {
+  padding: 4px 10px;
+  background-color: #020617;
+  color: #e5e7eb;
+  border-radius: 6px;
+  border: 1px solid #4b5563;
+  margin-right: 12px;
+}
+
+select:focus {
+  outline: 2px solid #3b82f6;
+}
+
+/* ===========================
+   BUTTONS
+   =========================== */
+
+button {
+  padding: 6px 14px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.05s ease;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* place problem controls in a row */
+#problem-selector > label,
+#problem-selector > select,
+#problem-selector > button {
+  margin-bottom: 8px;
+}
+
+/* ===========================
+   PROBLEM DISPLAY
+   =========================== */
+
+#problem-display {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #020617;
+  border: 1px solid #1f2937;
+  flex: 1;
+}
+
+#problem-difficulty {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: -4px;
+}
+
+/* body of the problem */
+#problem-description {
+  white-space: pre-wrap;
+  background-color: #020617;
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #1f2937;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ===========================
+   SOLUTION VIEWER
+   =========================== */
+
+#solution {
+  margin-top: 12px;
+}
+
+#solution-display {
+  margin-top: 8px;
+  max-height: 30vh;
+}
+
+#solution-description {
+  white-space: pre-wrap;
+  background-color: #020617;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #1f2937;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+}
+
+/* ===========================
+   CODE EDITOR / IDE
+   =========================== */
+
+#editor-container {
+  margin-top: 8px;
+  flex: 1;
+}
+
+#code-editor {
+  width: 100%;
+  height: 60vh;
+  background-color: #020617;
+  color: #e5e7eb;
+  border: 1px solid #1f2937;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+  white-space: pre-wrap;   /* wraps long lines instead of going off screen */
+  overflow-x: hidden;      /* blocks horizontal scrolling */
+  overflow-y: auto;  
+}
+
+/* custom input box under editor */
+#custom-input {
+  width: 100%;
+  background-color: #020617;
+  color: #e5e7eb;
+  border: 1px solid #1f2937;
+  border-radius: 6px;
+  padding: 8px;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+/* Run button spacing */
+#run-code {
+  margin-top: 10px;
+}
+
+/* ===========================
+   OUTPUT AREA
+   =========================== */
+
+#output-display {
+  margin-top: 12px;
+  max-height: 30vh;
+  border-top: 1px solid #111827;
+  padding-top: 8px;
+}
+
+#output,
+#status,
+#errors {
+  white-space: pre-wrap;
+  background-color: #020617;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #1f2937;
+  color: #e5e7eb;
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-size: 13px;
+  min-height: 32px;
+  margin-top: 4px;
+}
+
+/* ===========================
+   RESPONSIVE (stack on small screens)
+   =========================== */
+
+@media (max-width: 900px) {
+  #main-layout {
+    flex-direction: column;
+    height: auto;
+  }
+
+  #code-editor {
+    height: 40vh;
+  }
+}
