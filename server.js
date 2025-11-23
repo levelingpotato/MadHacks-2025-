@@ -52,7 +52,7 @@ wss.on("connection", (ws) => {
         return;
       }
 
-            const roomId = `room-${Date.now()}`;
+      const roomId = `room-${Date.now()}`;
       const player1 = waitingPlayer;
       const player2 = { ws, username };
 
