@@ -191,12 +191,39 @@ document.addEventListener("DOMContentLoaded", () => {
       // ------------------------
       // Collect compile/runtime errors
       // ------------------------
+
+      // FIX: Add a flag so we know if we failed
+      let hasError = false;
       let errorOutput = "";
+
       if (data.compile_output) {
+        hasError = true;
         errorOutput += "Compile Error:\n" + data.compile_output + "\n\n";
+
+        // ROAST ON COMPILE ERROR (Mean Voice)
+        const compile_insults = [
+          "You suck at coding you loser! You don't deserve to be at Madhacks!",
+          "You gotta be kidding me! 6 7",
+          "How do you expect to win with this trash!",
+        ]
+        const compileInsult = compile_insults[Math.floor(Math.random() * compile_insults.length)];
+        playRoast(compileInsult, "920944a3175541dcb1c4c2968f5c14f1");
       }
-      if (data.stderr) {
+
+      // Use 'else if' so we don't play two errors at once
+      else if (data.stderr) {
+        hasError = true;
         errorOutput += "Runtime Error:\n" + data.stderr + "\n";
+        // ROAST ON Runtime ERROR (Trump Voice)
+        const runtime_insults = [
+          "This is not good for the economy. We have to make computer science great again",
+          "I don't like this code. This is very, very, bad",
+          "I found 67 ways to make this code better.",
+          "You are reminding me of Sleepy Joe, and that is very bad."
+        ]
+        const runtimeInsult = runtime_insults[Math.floor(Math.random() * runtime_insults.length)];
+        // ROAST ON CRASH (Trump Voice)
+        playRoast(runtimeInsult, "5196af35f6ff4a0dbf541793fc9f2157");
       }
 
       errorsBox.textContent = errorOutput || "No errors";
@@ -204,10 +231,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // ==================================================
       // CHECK AGAINST CURRENT PROBLEM'S SAMPLE TEST
       // ==================================================
-      // ==================================================
-      // CHECK AGAINST CURRENT PROBLEM'S SAMPLE TEST
-      // ==================================================
-      if (currentProblem && currentProblem.sampleInput && currentProblem.sampleOutput && checkResultBox) {
+
+      // FIX: Only check the answer if there were NO errors (!hasError)
+      if (!hasError && currentProblem && currentProblem.sampleInput && currentProblem.sampleOutput && checkResultBox) {
         const expectedInput = currentProblem.sampleInput.trim();
         const actualInput = (stdin || "").trim();
 
@@ -216,11 +242,19 @@ document.addEventListener("DOMContentLoaded", () => {
           const expectedOut = currentProblem.sampleOutput.trim();
           const actualOut = (data.stdout || "").trim();
 
-          // -----------------------------
-          // 🔥 Replace THIS whole section
-          // -----------------------------
           if (actualOut === expectedOut) {
             checkResultBox.textContent = "✅ Correct for sample test";
+
+            // WINNER ROAST (Energetic Voice)
+            // ROAST ON Runtime ERROR (Trump Voice)
+            const winner_insults = [
+              "Lets go! Light work",
+              "This was too easy, you need a harder challenge",
+              "You finished quick! That was only 6 or 7 minutes!",
+              "Congratulations, you did it!!"
+            ]
+            const winnerInsult = winner_insults[Math.floor(Math.random() * winner_insults.length)];
+            playRoast(winnerInsult, "da8ae28bb18d4a1ca55eccf096f4c8da");
 
             console.log("✅ Sample correct!", {
               roomInfo,
@@ -243,11 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
               );
             } else {
-              console.warn("⚠️ Not sending problemSolved: missing room/socket or not open", {
-                roomInfo,
-                socket: !!gameSocket,
-                socketState: gameSocket && gameSocket.readyState,
-              });
+              console.warn("⚠️ Not sending problemSolved: missing room/socket or not open");
             }
 
           } else {
@@ -256,14 +286,15 @@ document.addEventListener("DOMContentLoaded", () => {
               expectedOut +
               "\n\nGot:\n" +
               actualOut;
+
+            // WRONG ANSWER ROAST (Disappointed Voice)
+            playRoast("Wrong answer. Lock in bro!", "933563129e564b19a115bedd57b7406a");
           }
         } else {
           checkResultBox.textContent =
             "ℹ️ Sample check skipped (Custom Input does not match this problem's sample input).";
         }
       }
-
-
 
     } catch (err) {
       // Network or fetch error → show user
@@ -279,3 +310,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 });
+
+// Fish Audio Helper
+async function playRoast(text, specifiedVoiceId) {
+  // Use the IP of wherever your server is running
+  const SERVER_URL = "http://localhost:4000/roast";
+
+  try {
+    const res = await fetch(SERVER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, voiceId: specifiedVoiceId })
+    });
+    if (res.ok) {
+      const blob = await res.blob();
+      new Audio(URL.createObjectURL(blob)).play();
+    }
+  } catch (err) {
+    console.log("Audio failed (server might be busy):", err);
+  }
+}
