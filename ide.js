@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Open WebSocket for in-game messages
-      gameSocket = new WebSocket("ws://localhost:4000");
+      gameSocket = new WebSocket("ws://10.141.254.52:4000");
 
       gameSocket.addEventListener("open", () => {
         // Tell server which room + who we are
