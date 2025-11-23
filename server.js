@@ -1,6 +1,7 @@
 // server.js
 // Simple 1v1 matchmaking server using WebSocket (no socket.io)
-
+const fs = require("fs");
+const path = require("path");
 const http = require("http");
 const WebSocket = require("ws");
 
@@ -10,8 +11,25 @@ const rooms = new Map();
 
 // Basic HTTP server (for health check / upgrade target)
 const server = http.createServer((req, res) => {
-  res.writeHead(200);
-  res.end("WebSocket matchmaking server is running.\n");
+  const urlPath = req.url === "/" ? "/homepage.html" : req.url;
+  const filePath = path.join(__dirname, urlPath);
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404);
+      return res.end("Not found");
+    }
+
+    // Infer Content-Type
+    let type = "text/plain";
+    if (filePath.endsWith(".html")) type = "text/html";
+    if (filePath.endsWith(".css")) type = "text/css";
+    if (filePath.endsWith(".js")) type = "application/javascript";
+
+    res.writeHead(200, { "Content-Type": type });
+    res.end(data);
+
+  });
 });
 
 // Attach WebSocket server
@@ -37,7 +55,7 @@ wss.on("connection", (ws) => {
       console.error("Invalid JSON from client:", data.toString());
       return;
     }
-    console.log("🔥 Message from client:", msg);   
+    console.log("🔥 Message from client:", msg);
 
 
     // Handle `joinQueue` messages
@@ -87,7 +105,7 @@ wss.on("connection", (ws) => {
 
     }
 
-        // --------------------------------------------------
+    // --------------------------------------------------
     // Player joins a room from gamepage.html
     // --------------------------------------------------
     else if (msg.type === "joinRoom") {
